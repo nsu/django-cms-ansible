@@ -27,11 +27,11 @@
   - name: delete default nginx site
     file: path=/etc/nginx/sites-enabled/default state=absent
   - name: add gunicorn systemd service
-    copy: copy src=files/gunicorn.service dest=/etc/systemd/system/gunicorn.service mode=0755
+    copy: src=files/gunicorn.service dest=/etc/systemd/system/gunicorn.service mode=0755
   - name: add gunicorn systemd socket
-    copy: copy src=files/gunicorn.socket dest=/etc/systemd/system/gunicorn.socket mode=0755
+    copy: src=files/gunicorn.socket dest=/etc/systemd/system/gunicorn.socket mode=0755
   - name: set gunicorn rundir permissions
-    file: path=/run/gunicorn owner=django group=www-data mode=0775 recurse=yes
+    file: path=/run/gunicorn state=directory owner=django group=www-data mode=0775 recurse=yes
   - name: enable gunicorn service
     service: name=gunicorn enabled=yes
   - name: bounce gunicorn
