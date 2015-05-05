@@ -1,5 +1,7 @@
 ---
 - hosts: django-cms-apps
+  vars_files:
+    - rds-creds.yml
   tasks: 
   - name: install system packages
     apt: name={{item}} update_cache=yes
@@ -27,11 +29,13 @@
   - name: delete default nginx site
     file: path=/etc/nginx/sites-enabled/default state=absent
   - name: add gunicorn systemd service
-    copy: src=files/gunicorn.service dest=/etc/systemd/system/gunicorn.service mode=0755
+    template: src=files/gunicorn.service dest=/etc/systemd/system/gunicorn.service mode=0755
   - name: add gunicorn systemd socket
     copy: src=files/gunicorn.socket dest=/etc/systemd/system/gunicorn.socket mode=0755
   - name: set gunicorn rundir permissions
     file: path=/run/gunicorn state=directory owner=django group=www-data mode=0775 recurse=yes
+  - name: reload systemd
+    command: /bin/systemctl --system daemon-reload
   - name: enable gunicorn service
     service: name=gunicorn enabled=yes
   - name: bounce gunicorn
