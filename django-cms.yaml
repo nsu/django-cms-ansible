@@ -14,3 +14,7 @@
     group: name=django state=present
   - name: create django user
     user: name=django groups=django
+  - name: clone django-cms repo
+    git: repo=https://github.com/gumaerc/DjangoCMSDemo.git dest=/srv/DjangoCMSDemo
+  - name: Change ownership of application
+    file: path=/srv/DjangoCMSDemo owner=django group=django recurse=yes
