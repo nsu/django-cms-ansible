@@ -1,0 +1,16 @@
+---
+- hosts: django-cms-apps
+  tasks: 
+  - name: Install system packages
+    apt: name={{item}} update_cache=yes
+    with_items:
+      - libpq-dev 
+      - postgresql-client-9.4 
+      - python-dev 
+      - python-pip 
+      - git 
+      - nginx
+  - name: Create django group
+    group: name=django state=present
+  - name: create django user
+    user: name=django groups=django
