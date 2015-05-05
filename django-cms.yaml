@@ -1,7 +1,7 @@
 ---
 - hosts: django-cms-apps
   tasks: 
-  - name: Install system packages
+  - name: install system packages
     apt: name={{item}} update_cache=yes
     with_items:
       - libpq-dev 
@@ -10,11 +10,16 @@
       - python-pip 
       - git 
       - nginx
-  - name: Create django group
+  - name: create django group
     group: name=django state=present
   - name: create django user
     user: name=django groups=django
   - name: clone django-cms repo
     git: repo=https://github.com/gumaerc/DjangoCMSDemo.git dest=/srv/DjangoCMSDemo
-  - name: Change ownership of application
+  - name: change ownership of application
     file: path=/srv/DjangoCMSDemo owner=django group=django recurse=yes
+  - name: add nginx site config
+    copy: src=files/django-cms-site dest=/etc/nginx/sites-available/django-cms
+  - name: enable django-cms site 
+    file: src=/etc/nginx/sites-available/django-cms dest=/etc/nginx/sites-enabled/django-cms state=link
+  - name: delete default nginx site
